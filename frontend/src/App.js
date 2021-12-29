@@ -3,7 +3,8 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Grid, Paper, TextField, Typography } from "@mui/material";
-import GoogleMapReact from 'google-map-react';
+import GoogleMapReact from "google-map-react";
+import Stack from "@mui/material/Stack";
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
@@ -11,11 +12,28 @@ function App() {
   let defaultProps = {
     center: {
       lat: 59.95,
-      lng: 30.33
+      lng: 30.33,
     },
-    zoom: 11
+    zoom: 11,
   };
   let [locs, setLocs] = React.useState([0, 0, 0, 0, 0]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    let entry = {
+      Name: data.get("Name"),
+      Latitude: data.get("Latitude"),
+      Longitude: data.get("Longitude"),
+    }
+    let entryIndex = locs.indexOf(0)
+    if (entryIndex < 5) {
+      locs[entryIndex] = entry
+      console.log(locs);
+      setLocs([...locs])
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -64,47 +82,72 @@ function App() {
               borderTopLeftRadius: "36px",
               borderTopRightRadius: "36px",
             }}
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
           >
-            <Box sx={{ width: "50%", display: "flex", alignItems: "center" }}>
-              <TextField
-                sx={{ ml: 5 }}
-                inputProps={{
-                  style: {
-                    fontSize: 14,
-                    height: 40,
-                    width: 272,
-                    padding: "0 14px",
-                    borderRadius: 5,
-                    backgroundColor: "#fff",
-                  },
-                }}
-              />
-              <TextField
-                sx={{ ml: 5 }}
-                inputProps={{
-                  style: {
-                    fontSize: 14,
-                    height: 40,
-                    width: 142,
-                    padding: "0 14px",
-                    borderRadius: 5,
-                    backgroundColor: "#fff",
-                  },
-                }}
-              />
-              <TextField
-                sx={{ ml: 5 }}
-                inputProps={{
-                  style: {
-                    fontSize: 14,
-                    height: 40,
-                    width: 142,
-                    padding: "0 14px",
-                    borderRadius: 5,
-                    backgroundColor: "#fff",
-                  },
-                }}
-              />
+            <Box sx={{ width: "50%", display: "flex", alignItems: "center" ,pl:5}}>
+              <Stack spacing={1} sx={{ ml: 2, mr: 10 }}>
+                <Typography variant="caption" sx={{ color: "#fff" }}>
+                  Location Name
+                </Typography>
+                <TextField
+                  name="Name"
+                  placeholder="Location"
+                  inputProps={{
+                    style: {
+                      fontSize: 14,
+                      height: 40,
+                      width: 212,
+                      padding: "0 14px",
+                      borderRadius: 5,
+                      backgroundColor: "#fff",
+                    },
+                  }}
+                />
+              </Stack>
+              <Stack spacing={1} sx={{ ml: 2 }}>
+                <Typography variant="caption" sx={{ color: "#fff" }}>
+                  Enter Longitude
+                </Typography>
+                <TextField
+                  sx={{ ml: 5 }}
+                  name="Longitude"
+                  placeholder="Lon"
+                  type="number"
+                  inputProps={{
+                    style: {
+                      fontSize: 14,
+                      height: 40,
+                      width: 92,
+                      padding: "0 14px",
+                      borderRadius: 5,
+                      backgroundColor: "#fff",
+                    },
+                  }}
+                />
+              </Stack>
+              <Stack spacing={1} sx={{ ml: 2 }}>
+                <Typography variant="caption" sx={{ color: "#fff" }}>
+                  Enter Latitude
+                </Typography>
+                <TextField
+                  sx={{ ml: 5 }}
+                  name="Latitude"
+                  placeholder="Lat"
+                  type="number"
+                  inputProps={{
+                    style: {
+                      fontSize: 14,
+                      height: 40,
+                      width: 92,
+                      padding: "0 14px",
+                      borderRadius: 5,
+                      backgroundColor: "#fff",
+                    },
+                  }}
+                />
+              </Stack>
             </Box>
             <Box
               sx={{
@@ -128,6 +171,7 @@ function App() {
                     opacity: 1,
                   },
                 }}
+                type="submit"
               >
                 Submit
               </Button>{" "}
@@ -144,7 +188,7 @@ function App() {
                 </Typography>
                 <Box sx={{ mt: 2 }}>
                   {locs.map((item, i) => (
-                    <Box sx={{ display: "block", mt: 2 }}>
+                    <Box key={i} sx={{ display: "block", mt: 2 }}>
                       <Box sx={{ display: "flex" }}>
                         {i + 1})
                         {item === 0 ? (
@@ -157,35 +201,53 @@ function App() {
                           <span
                             style={{ marginLeft: "10px", marginRight: "5rem" }}
                           >
-                            {item}
+                            {item.Name}
                           </span>
                         )}
                         <Box>
                           {item === 0 ? (
-                            <span style={{ marginLeft: "10px" }}>
+                            <span style={{ marginLeft: "30px" }}>
                               _ _ _ _ _ _ _{" "}
                             </span>
                           ) : (
-                            <span>{item}</span>
+                            <span style={{ marginLeft: "30px" }}>{item.Latitude}</span>
                           )}
                           {item === 0 ? (
-                            <span style={{ marginLeft: "10px" }}>
+                            <span style={{ marginLeft: "30px" }}>
                               _ _ _ _ _ _ _{" "}
                             </span>
                           ) : (
-                            <span>{item}</span>
+                            <span style={{ marginLeft: "30px" }}>{item.Longitude}</span>
                           )}
                         </Box>
                       </Box>
                     </Box>
                   ))}
                 </Box>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  sx={{
+                    background: '#074770 0% 0% no-repeat padding-box',
+                    borderRadius:5,
+                    p: 1,
+                    mt: 20,
+                    opacity: 1,
+                    ":hover": {
+                      opacity: 1,
+                    },
+                  }}
+                >
+                  Show Route
+                </Button>{" "}
               </Box>
             </Grid>
             <Grid item xs={6}>
               <Box sx={{ width: "100%", height: 5, height: "48vh" }}>
                 <GoogleMapReact
-                  bootstrapURLKeys={{ key: "AIzaSyDYQgSl3hTwNv6ACa0CLlrgE9x4VdPHWuY" }}
+                  bootstrapURLKeys={{
+                    key: "AIzaSyDYQgSl3hTwNv6ACa0CLlrgE9x4VdPHWuY",
+                  }}
                   defaultCenter={defaultProps.center}
                   defaultZoom={defaultProps.zoom}
                 >
@@ -200,7 +262,7 @@ function App() {
           </Grid>
         </Paper>
       </Box>
-    </Box >
+    </Box>
   );
 }
 
